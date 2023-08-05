@@ -109,7 +109,7 @@ const usersSlice = createSlice({
 				...estado,
 				user: {
 					id: action.payload,
-					name: '',
+					name: action.payload.name,
 					logged: true,
 				},
 			}; // string com o id do usuario logado
@@ -177,8 +177,8 @@ const usersSlice = createSlice({
 				// 2 - ter uma propriedade no estado de user que diga se ta logado ou não - logged
 				return {
 					user: {
-						id: action.payload.data,
-						name: '', // alterar a API para retornar o nome tambem
+						id: action.payload.data.id,
+						name: action.payload.data.name, // alterar a API para retornar o nome tambem
 						logged: true,
 					},
 					loading: false,

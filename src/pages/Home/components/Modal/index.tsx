@@ -151,7 +151,6 @@ export const ModalCadastro: React.FC<ModalProps> = ({
 		};
 
 		dispatch(cadastrarUsuario(user));
-		console.log(user);
 
 		setTimeout(() => {
 			limpaModal();

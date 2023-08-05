@@ -1,10 +1,12 @@
 /* eslint-disable react/prop-types */
-import { Logout } from '@mui/icons-material';
+import { Folder, Logout } from '@mui/icons-material';
 import {
 	AppBar,
 	Box,
 	Divider,
+	Grid,
 	IconButton,
+	TextField,
 	Toolbar,
 	Typography,
 } from '@mui/material';
@@ -43,27 +45,67 @@ export const MyAppbar: React.FC<AppbarProps> = ({ usuario }) => {
 					boxShadow: 0,
 				}}
 			>
-				<Toolbar>
-					<Typography
-						variant="h4"
-						component="div"
-						fontWeight={'bold'}
-						sx={{ flexGrow: 1 }}
-					>
-						Olá {usuario}!
-					</Typography>
+				<Toolbar
+					sx={{
+						display: 'flex',
+						justifyContent: 'space-between',
+						alignItems: 'center',
+					}}
+				>
+					<Grid>
+						<Typography
+							variant="h4"
+							component="div"
+							fontWeight={'bold'}
+							sx={{ flexGrow: 1 }}
+						>
+							Olá {usuario}!
+						</Typography>
+					</Grid>
 
-					<IconButton
-						onClick={logout}
-						color="inherit"
+					<Grid
 						sx={{
-							'&:hover': {
-								background: '#576CA8',
-							},
+							marginBottom: 2,
+							bgcolor: '#ffff',
+							borderRadius: 3,
+							width: '50%',
 						}}
 					>
-						<Logout />
-					</IconButton>
+						<TextField
+							id="outlined-basic"
+							label="Buscar"
+							variant="filled"
+							sx={{
+								width: '100%',
+								borderBottom: 'none',
+							}}
+						/>
+					</Grid>
+
+					<Grid>
+						<IconButton
+							onClick={() => console.log('Arquivar')}
+							color="inherit"
+							sx={{
+								'&:hover': {
+									background: '#576CA8',
+								},
+							}}
+						>
+							<Folder />
+						</IconButton>
+						<IconButton
+							onClick={logout}
+							color="inherit"
+							sx={{
+								'&:hover': {
+									background: '#576CA8',
+								},
+							}}
+						>
+							<Logout />
+						</IconButton>
+					</Grid>
 				</Toolbar>
 			</AppBar>
 			<Divider sx={{ height: '2px', background: '#fff' }} />

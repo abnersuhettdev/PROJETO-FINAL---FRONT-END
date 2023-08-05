@@ -31,9 +31,10 @@ export const Dashboard = () => {
 			return;
 		}
 
-		// setUsername(estadoUser.user.name);
 		dispatch(setUser(JSON.parse(userLogged)));
-	}, [dispatch]);
+		setUsername(estadoUser.user.name);
+		console.log(estadoUser.user);
+	}, [dispatch, estadoUser.user.name, username]);
 
 	useEffect(() => {
 		if (!estadoUser.user.logged) {

@@ -13,5 +13,5 @@ export type ResponseSignUp = {
 export type ResponseSignIn = {
 	success: boolean;
 	message: string;
-	data?: string;
+	data?: { id: string; name: string };
 };
