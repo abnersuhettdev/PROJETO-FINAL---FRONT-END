@@ -87,9 +87,7 @@ export const MyAppbar: React.FC<AppbarProps> = ({ usuario }) => {
 						{route.pathname !== '/archived' ? (
 							<IconButton
 								onClick={() => {
-									console.log(route.pathname);
 									navigate('/archived');
-									// navigate('/archived')
 								}}
 								color="inherit"
 								sx={{
@@ -103,9 +101,7 @@ export const MyAppbar: React.FC<AppbarProps> = ({ usuario }) => {
 						) : (
 							<IconButton
 								onClick={() => {
-									console.log(route.pathname);
 									navigate('/dashboard');
-									// navigate('/archived')
 								}}
 								color="inherit"
 								sx={{

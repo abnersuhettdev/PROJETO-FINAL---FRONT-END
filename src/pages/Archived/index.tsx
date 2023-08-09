@@ -12,7 +12,6 @@ import { MySnackbar } from '../../shared/components/Snackbar';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { showModalNotes } from '../../store/modules/ModalNotes/modalNotesSlice';
 import { listAllNotes } from '../../store/modules/Notes/notesSlice';
-import { logoutUser, setUser } from '../../store/modules/User/userSlice';
 
 export const Archived = () => {
 	const navigate = useNavigate();
@@ -21,19 +20,12 @@ export const Archived = () => {
 	const estadoUser = useAppSelector((estado) => estado.users);
 
 	const [username, setUsername] = useState('');
-	const [email, setEmail] = useState('');
+	const [idUserLogged, setIdUserLogged] = useState('');
 
 	useEffect(() => {
-		const userLogged = localStorage.getItem('userLogged');
-
-		if (!userLogged) {
-			dispatch(logoutUser());
-			return;
-		}
-
-		dispatch(setUser(JSON.parse(userLogged)));
 		setUsername(estadoUser.user.name);
-	}, [dispatch, estadoUser.user.name, username]);
+		setIdUserLogged(estadoUser.user.id);
+	}, [estadoUser.user.id, estadoUser.user.name, username]);
 
 	useEffect(() => {
 		if (!estadoUser.user.logged) {
@@ -61,7 +53,8 @@ export const Archived = () => {
 				>
 					{select.map(
 						(note) =>
-							note.criadoPor === email && (
+							note.criadoPor === idUserLogged &&
+							note.arquivado === true && (
 								<Grid key={note.id} item xs={12} sm={6} md={4}>
 									<MyCard note={note} />
 								</Grid>
@@ -94,7 +87,7 @@ export const Archived = () => {
 				</IconButton>
 				<Loading />
 			</Grid>
-			<ModalNotes emailUsuarioLogado={email} />
+			<ModalNotes idUserLogged={idUserLogged} />
 			<MySnackbar />
 		</>
 	);

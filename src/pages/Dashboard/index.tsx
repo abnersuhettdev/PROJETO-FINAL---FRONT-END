@@ -12,7 +12,6 @@ import { MySnackbar } from '../../shared/components/Snackbar';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { showModalNotes } from '../../store/modules/ModalNotes/modalNotesSlice';
 import { listAllNotes } from '../../store/modules/Notes/notesSlice';
-import { logoutUser, setUser } from '../../store/modules/User/userSlice';
 
 export const Dashboard = () => {
 	const navigate = useNavigate();
@@ -21,20 +20,12 @@ export const Dashboard = () => {
 	const estadoUser = useAppSelector((estado) => estado.users);
 
 	const [username, setUsername] = useState('');
-	const [email, setEmail] = useState('');
+	const [idUserLogged, setIdUserLogged] = useState('');
 
 	useEffect(() => {
-		const userLogged = localStorage.getItem('userLogged');
-
-		if (!userLogged) {
-			dispatch(logoutUser());
-			return;
-		}
-
-		dispatch(setUser(JSON.parse(userLogged)));
 		setUsername(estadoUser.user.name);
-		console.log(estadoUser.user);
-	}, [dispatch, estadoUser.user.name, username]);
+		setIdUserLogged(estadoUser.user.id);
+	}, [estadoUser.user.name, estadoUser.user.id, username, idUserLogged]);
 
 	useEffect(() => {
 		if (!estadoUser.user.logged) {
@@ -62,7 +53,7 @@ export const Dashboard = () => {
 				>
 					{select.map(
 						(note) =>
-							note.criadoPor === email && (
+							note.criadoPor === idUserLogged && (
 								<Grid key={note.id} item xs={12} sm={6} md={4}>
 									<MyCard note={note} />
 								</Grid>
@@ -95,7 +86,7 @@ export const Dashboard = () => {
 				</IconButton>
 				<Loading />
 			</Grid>
-			<ModalNotes emailUsuarioLogado={email} />
+			<ModalNotes idUserLogged={idUserLogged} />
 			<MySnackbar />
 		</>
 	);

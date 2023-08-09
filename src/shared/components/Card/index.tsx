@@ -1,4 +1,5 @@
 /* eslint-disable react/prop-types */
+import { Folder } from '@mui/icons-material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { Divider, Grid, IconButton, Typography } from '@mui/material';
@@ -47,6 +48,11 @@ export const MyCard: React.FC<NotesProps> = ({ note }) => {
 						</Typography>
 					</Grid>
 					<Grid item justifyContent={'flex-end'}>
+						<IconButton
+							onClick={() => console.log('nota arquivada')}
+						>
+							<Folder />
+						</IconButton>
 						<IconButton
 							onClick={() =>
 								dispatch(

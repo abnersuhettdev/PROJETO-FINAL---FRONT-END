@@ -26,12 +26,10 @@ import {
 import { showSnackbar } from '../../../store/modules/Snackbar/snackbarSlice';
 
 interface ModalNotesProps {
-	emailUsuarioLogado: string;
+	idUserLogged: string;
 }
 
-export const ModalNotes: React.FC<ModalNotesProps> = ({
-	emailUsuarioLogado,
-}) => {
+export const ModalNotes: React.FC<ModalNotesProps> = ({ idUserLogged }) => {
 	const select = useAppSelector((state) => state.modal);
 	const dispatch = useAppDispatch();
 
@@ -103,8 +101,10 @@ export const ModalNotes: React.FC<ModalNotesProps> = ({
 					criadoEm: gerarData(),
 					titulo: titulo,
 					descricao: descricao,
-					criadoPor: emailUsuarioLogado,
+					criadoPor: idUserLogged,
+					arquivado: false,
 				};
+
 				dispatch(createNote(novoRecado));
 				dispatch(hideModalNotes({ open: false }));
 				limpaInputs();
