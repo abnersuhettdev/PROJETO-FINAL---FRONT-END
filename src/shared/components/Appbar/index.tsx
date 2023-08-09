@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { Folder, Logout } from '@mui/icons-material';
+import { Folder, Home, Logout } from '@mui/icons-material';
 import {
 	AppBar,
 	Box,
@@ -10,7 +10,7 @@ import {
 	Toolbar,
 	Typography,
 } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { useAppDispatch } from '../../../store/hooks';
 import {
@@ -26,6 +26,7 @@ interface AppbarProps {
 export const MyAppbar: React.FC<AppbarProps> = ({ usuario }) => {
 	const navigate = useNavigate();
 	const dispatch = useAppDispatch();
+	const route = useLocation();
 
 	function logout() {
 		dispatch(showLoading());
@@ -83,17 +84,40 @@ export const MyAppbar: React.FC<AppbarProps> = ({ usuario }) => {
 					</Grid>
 
 					<Grid>
-						<IconButton
-							onClick={() => console.log('Arquivar')}
-							color="inherit"
-							sx={{
-								'&:hover': {
-									background: '#576CA8',
-								},
-							}}
-						>
-							<Folder />
-						</IconButton>
+						{route.pathname !== '/archived' ? (
+							<IconButton
+								onClick={() => {
+									console.log(route.pathname);
+									navigate('/archived');
+									// navigate('/archived')
+								}}
+								color="inherit"
+								sx={{
+									'&:hover': {
+										background: '#576CA8',
+									},
+								}}
+							>
+								<Folder />
+							</IconButton>
+						) : (
+							<IconButton
+								onClick={() => {
+									console.log(route.pathname);
+									navigate('/dashboard');
+									// navigate('/archived')
+								}}
+								color="inherit"
+								sx={{
+									'&:hover': {
+										background: '#576CA8',
+									},
+								}}
+							>
+								<Home />
+							</IconButton>
+						)}
+
 						<IconButton
 							onClick={logout}
 							color="inherit"
