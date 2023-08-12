@@ -18,12 +18,9 @@ const initialState = {
 	loading: false,
 };
 
-// CRIAR A ACTION ASYNC PARA SIGNUP
-// dispatch(cadastrarUsuario())
 export const cadastrarUsuario = createAsyncThunk(
 	'user/cadastrar',
 	async (novoUsuario: IUser, { dispatch }) => {
-		// to fazendo uma requisição à algo externo? try catch
 		try {
 			const resposta = await minhaApi.post('/users/signup', novoUsuario);
 
@@ -61,7 +58,6 @@ export const cadastrarUsuario = createAsyncThunk(
 	},
 );
 
-// CRIAR A ACTION ASYNC PARA SIGNIN
 export const logarUsuario = createAsyncThunk(
 	'user/logar',
 	async (dados: Omit<IUser, 'name'>, { dispatch }) => {
@@ -112,7 +108,7 @@ const usersSlice = createSlice({
 					name: action.payload.name,
 					logged: true,
 				},
-			}; // string com o id do usuario logado
+			};
 		},
 		logoutUser: () => {
 			localStorage.removeItem('userLogged');
@@ -120,18 +116,13 @@ const usersSlice = createSlice({
 		},
 	},
 	extraReducers: (builder) => {
-		// CADASTRO
 		builder.addCase(cadastrarUsuario.pending, (estadoAtual) => {
-			// ALTERAR DIRETAMENTE UM ESTADO LOCAL, NÃO POSSO ALTERAR DIRETAMENTE UM ESTADO GLOBAL
 			return {
 				...estadoAtual,
 				loading: true,
 			};
 		});
 		builder.addCase(cadastrarUsuario.fulfilled, (estadoAtual, action) => {
-			// quando tiver concluida a promise
-
-			// ou success é true -> cadastrou
 			if (action.payload.success && action.payload.data) {
 				return {
 					user: {
@@ -143,7 +134,6 @@ const usersSlice = createSlice({
 				};
 			}
 
-			// ou caiu no catch e success é false -> não cadastrou
 			if (!action.payload.success) {
 				return {
 					...estadoAtual,
@@ -152,14 +142,12 @@ const usersSlice = createSlice({
 			}
 		});
 		builder.addCase(cadastrarUsuario.rejected, (estadoAtual) => {
-			// ultimo caso, erramos muito na construção da requisição
 			return {
 				...estadoAtual,
 				loading: false,
 			};
 		});
 
-		// LOGIN
 		builder.addCase(logarUsuario.pending, (estadoAtual) => {
 			return {
 				...estadoAtual,
@@ -168,17 +156,15 @@ const usersSlice = createSlice({
 		});
 		builder.addCase(logarUsuario.fulfilled, (estadoAtual, action) => {
 			if (action.payload.success && action.payload.data) {
-				// 1 - SALVAR O ID NO LOCALSTORAGE
 				localStorage.setItem(
 					'userLogged',
 					JSON.stringify(action.payload.data),
 				);
 
-				// 2 - ter uma propriedade no estado de user que diga se ta logado ou não - logged
 				return {
 					user: {
 						id: action.payload.data.id,
-						name: action.payload.data.name, // alterar a API para retornar o nome tambem
+						name: action.payload.data.name,
 						logged: true,
 					},
 					loading: false,

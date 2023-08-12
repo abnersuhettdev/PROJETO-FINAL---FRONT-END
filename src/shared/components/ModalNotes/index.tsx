@@ -12,14 +12,12 @@ import {
 	TextField,
 } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { v4 as gerarId } from 'uuid';
 
 import { IsValidCredentials } from '../../../configs/types/IsValidCredentials';
-import { INotes } from '../../../configs/types/Notes';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import { hideModalNotes } from '../../../store/modules/ModalNotes/modalNotesSlice';
+import { createNoteAsyncThunk } from '../../../store/modules/Notes/newnotesSlice';
 import {
-	createNote,
 	deleteNote,
 	updateNote,
 } from '../../../store/modules/Notes/notesSlice';
@@ -84,7 +82,7 @@ export const ModalNotes: React.FC<ModalNotesProps> = ({ idUserLogged }) => {
 		}
 	}, [descricao]);
 
-	function handleConfirm() {
+	async function handleConfirm() {
 		if (
 			!titulo ||
 			!descricao ||
@@ -96,16 +94,14 @@ export const ModalNotes: React.FC<ModalNotesProps> = ({ idUserLogged }) => {
 
 		switch (select.contexto) {
 			case 'create':
-				const novoRecado: INotes = {
-					id: gerarId(),
-					criadoEm: gerarData(),
-					titulo: titulo,
-					descricao: descricao,
-					criadoPor: idUserLogged,
-					arquivado: false,
-				};
+				await dispatch(
+					createNoteAsyncThunk({
+						title: titulo,
+						description: descricao,
+						authorId: idUserLogged,
+					}),
+				);
 
-				dispatch(createNote(novoRecado));
 				dispatch(hideModalNotes({ open: false }));
 				limpaInputs();
 				dispatch(
@@ -114,6 +110,25 @@ export const ModalNotes: React.FC<ModalNotesProps> = ({ idUserLogged }) => {
 						mensagem: 'Recado criado com sucesso',
 					}),
 				);
+
+				// const novoRecado: INotes = {
+				// 	id: gerarId(),
+				// 	criadoEm: gerarData(),
+				// 	titulo: titulo,
+				// 	descricao: descricao,
+				// 	criadoPor: idUserLogged,
+				// 	arquivado: false,
+				// };
+
+				// dispatch(createNote(novoRecado));
+				// dispatch(hideModalNotes({ open: false }));
+				// limpaInputs();
+				// dispatch(
+				// 	showSnackbar({
+				// 		tipo: 'success',
+				// 		mensagem: 'Recado criado com sucesso',
+				// 	}),
+				// );
 				break;
 
 			case 'update':
