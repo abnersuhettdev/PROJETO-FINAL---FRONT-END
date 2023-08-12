@@ -63,13 +63,6 @@ export const getNotesAsyncThunk = createAsyncThunk(
 				},
 			});
 
-			dispatch(
-				showSnackbar({
-					tipo: 'success',
-					mensagem: 'Recados carregados com sucesso',
-				}),
-			);
-
 			return response.data as NotesListReturn;
 		} catch (err) {
 			dispatch(
