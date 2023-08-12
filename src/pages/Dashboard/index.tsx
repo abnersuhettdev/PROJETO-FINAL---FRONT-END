@@ -11,14 +11,16 @@ import { ModalNotes } from '../../shared/components/ModalNotes';
 import { MySnackbar } from '../../shared/components/Snackbar';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { showModalNotes } from '../../store/modules/ModalNotes/modalNotesSlice';
-import { listAllNotes } from '../../store/modules/Notes/newnotesSlice';
+import {
+	getNotesAsyncThunk,
+	listAllNotes,
+} from '../../store/modules/Notes/newnotesSlice';
 
 export const Dashboard = () => {
 	const navigate = useNavigate();
 	const dispatch = useAppDispatch();
 	const select = useAppSelector(listAllNotes);
 	const estadoUser = useAppSelector((estado) => estado.users);
-	const userLogged = localStorage.getItem('userLogged');
 
 	const [username, setUsername] = useState('');
 	const [idUserLogged, setIdUserLogged] = useState('');
@@ -28,18 +30,15 @@ export const Dashboard = () => {
 		setIdUserLogged(estadoUser.user.id);
 	}, [estadoUser.user.name, estadoUser.user.id, username, idUserLogged]);
 
-	// useEffect(() => {
-	// 	if (!estadoUser.user.logged) {
-	// 		navigate('/');
-	// 	}
-	// }, [estadoUser, navigate]);
-
 	useEffect(() => {
-		if (!userLogged) {
+		if (!estadoUser.user.logged) {
 			navigate('/');
 		}
-		console.log(userLogged);
-	});
+	}, [estadoUser, navigate]);
+
+	useEffect(() => {
+		dispatch(getNotesAsyncThunk({}));
+	}, []);
 
 	return (
 		<>
@@ -61,8 +60,7 @@ export const Dashboard = () => {
 				>
 					{select.map(
 						(note) =>
-							note.criadoPor === idUserLogged &&
-							note.arquivado != true && (
+							note.arquived != true && (
 								<Grid key={note.id} item xs={12} sm={6} md={4}>
 									<MyCard note={note} />
 								</Grid>

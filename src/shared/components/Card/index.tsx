@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { Folder } from '@mui/icons-material';
+import { Folder, FolderOutlined } from '@mui/icons-material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { Divider, Grid, IconButton, Typography } from '@mui/material';
@@ -20,9 +20,8 @@ export const MyCard: React.FC<NotesProps> = ({ note }) => {
 	const dispatch = useAppDispatch();
 
 	const archiveNote = async () => {
-		await dispatch(
-			archiveNotesAsyncThunk({ authorId: note.criadoPor, id: note.id }),
-		);
+		console.log('arquivar');
+		await dispatch(archiveNotesAsyncThunk({ id: note.id }));
 	};
 
 	return (
@@ -35,11 +34,11 @@ export const MyCard: React.FC<NotesProps> = ({ note }) => {
 						marginBottom: 1,
 					}}
 				>
-					{note.titulo}
+					{note.title}
 				</Typography>
 				<Divider />
 				<Typography variant="body1" component={'p'} marginTop={1}>
-					{note.descricao}
+					{note.description}
 				</Typography>
 			</CardContent>
 			<Divider />
@@ -51,12 +50,13 @@ export const MyCard: React.FC<NotesProps> = ({ note }) => {
 							color={'text.secondary'}
 							component={'span'}
 						>
-							Criado Em : {note.criadoEm}
+							Criado Em : {note.createdAt}
 						</Typography>
 					</Grid>
 					<Grid item justifyContent={'flex-end'}>
-						<IconButton onClick={() => archiveNote}>
-							<Folder />
+						<IconButton onClick={archiveNote}>
+							{!note.arquived && <Folder />}
+							{note.arquived && <FolderOutlined />}
 						</IconButton>
 						<IconButton
 							onClick={() =>

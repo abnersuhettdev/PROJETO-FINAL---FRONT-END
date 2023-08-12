@@ -1,8 +1,7 @@
 export interface INotes {
 	id: string;
-	titulo: string;
-	descricao: string;
-	arquivado: boolean;
-	criadoEm: string;
-	criadoPor: string;
+	title: string;
+	description: string;
+	arquived: boolean;
+	createdAt: string;
 }

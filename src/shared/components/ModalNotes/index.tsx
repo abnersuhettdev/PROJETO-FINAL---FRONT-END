@@ -47,8 +47,8 @@ export const ModalNotes: React.FC<ModalNotesProps> = ({ idUserLogged }) => {
 
 	useEffect(() => {
 		if (select.recadoSelecionado) {
-			setTitulo(select.recadoSelecionado.titulo);
-			setDescricao(select.recadoSelecionado.descricao);
+			setTitulo(select.recadoSelecionado.title);
+			setDescricao(select.recadoSelecionado.description);
 		} else {
 			limpaInputs();
 		}
@@ -94,6 +94,7 @@ export const ModalNotes: React.FC<ModalNotesProps> = ({ idUserLogged }) => {
 
 		switch (select.contexto) {
 			case 'create':
+				console.log('criar nota');
 				await dispatch(
 					createNoteAsyncThunk({
 						title: titulo,
@@ -117,7 +118,6 @@ export const ModalNotes: React.FC<ModalNotesProps> = ({ idUserLogged }) => {
 				if (select.recadoSelecionado) {
 					await dispatch(
 						updateNotesAsyncThunk({
-							authorId: select.recadoSelecionado.criadoPor,
 							id: select.recadoSelecionado.id,
 							description: descricao,
 							title: titulo,
@@ -138,7 +138,6 @@ export const ModalNotes: React.FC<ModalNotesProps> = ({ idUserLogged }) => {
 				if (select.recadoSelecionado) {
 					dispatch(
 						deleteNotesAsyncThunk({
-							authorId: select.recadoSelecionado.criadoPor,
 							id: select.recadoSelecionado.id,
 						}),
 					);

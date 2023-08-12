@@ -11,7 +11,7 @@ const AppRoutes: React.FC = () => {
 			<Routes>
 				<Route path="/" element={<Home />} />
 				<Route path="/dashboard" element={<Dashboard />} />
-				<Route path="/archived" element={<Archived />} />
+				<Route path="/arquived" element={<Archived />} />
 			</Routes>
 		</BrowserRouter>
 	);

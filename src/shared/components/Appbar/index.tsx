@@ -10,13 +10,16 @@ import {
 	Toolbar,
 	Typography,
 } from '@mui/material';
+import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useDebounce } from 'use-debounce';
 
 import { useAppDispatch } from '../../../store/hooks';
 import {
 	hideLoading,
 	showLoading,
 } from '../../../store/modules/Loading/loadingSlice';
+import { getNotesAsyncThunk } from '../../../store/modules/Notes/newnotesSlice';
 import { logoutUser } from '../../../store/modules/User/userSlice';
 
 interface AppbarProps {
@@ -27,6 +30,8 @@ export const MyAppbar: React.FC<AppbarProps> = ({ usuario }) => {
 	const navigate = useNavigate();
 	const dispatch = useAppDispatch();
 	const route = useLocation();
+	const [filter, setFilter] = useState('');
+	const [value] = useDebounce(filter, 1000);
 
 	function logout() {
 		dispatch(showLoading());
@@ -36,6 +41,16 @@ export const MyAppbar: React.FC<AppbarProps> = ({ usuario }) => {
 			navigate('/');
 		}, 3000);
 	}
+
+	useEffect(() => {
+		if (value) {
+			dispatch(
+				getNotesAsyncThunk({
+					title: filter,
+				}),
+			);
+		}
+	}, [value]);
 
 	return (
 		<Box sx={{ flexGrow: 1, height: '10vh' }}>
@@ -75,19 +90,23 @@ export const MyAppbar: React.FC<AppbarProps> = ({ usuario }) => {
 						<TextField
 							id="outlined-basic"
 							label="Buscar"
+							value={filter}
 							variant="filled"
 							sx={{
 								width: '100%',
 								borderBottom: 'none',
 							}}
+							onChange={(ev) => {
+								setFilter(ev.target.value);
+							}}
 						/>
 					</Grid>
 
 					<Grid>
-						{route.pathname !== '/archived' ? (
+						{route.pathname !== '/arquived' ? (
 							<IconButton
 								onClick={() => {
-									navigate('/archived');
+									navigate('/arquived');
 								}}
 								color="inherit"
 								sx={{

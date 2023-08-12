@@ -10,37 +10,39 @@ export interface UpdateNote {
 	id: string;
 	title?: string;
 	description?: string;
-	authorId: string;
 }
 
 export interface ReturnNote {
-	message: string;
-	success: boolean;
-	note: INotes;
+	data: {
+		message: string;
+		success: boolean;
+		data: INotes;
+	};
 }
 
 export interface GetNotes {
-	authorId: string;
 	title?: string;
-	archived?: string;
+	arquived?: string;
 }
 
 export interface NotesListReturn {
+	// data: {
 	message: string;
 	success: boolean;
-	notes: INotes[];
+	data: INotes[];
+	// };
 }
 
 export interface UpdateNoteReturn {
 	message: string;
 	success: boolean;
-	updatedData: INotes;
+	data: INotes;
 }
 
 export interface DeletedNoteReturn {
 	message: string;
 	success: boolean;
-	deletedNote: INotes;
+	data: INotes;
 }
 
 export interface ArchivedNoteReturn {
