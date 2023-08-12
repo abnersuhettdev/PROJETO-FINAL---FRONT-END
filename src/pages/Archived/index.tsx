@@ -53,7 +53,7 @@ export const Archived = () => {
 				>
 					{select.map(
 						(note) =>
-							note.arquived === true && (
+							note.archived === true && (
 								<Grid key={note.id} item xs={12} sm={6} md={4}>
 									<MyCard note={note} />
 								</Grid>

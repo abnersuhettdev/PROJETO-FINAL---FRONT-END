@@ -20,8 +20,7 @@ import {
 	createNoteAsyncThunk,
 	deleteNotesAsyncThunk,
 	updateNotesAsyncThunk,
-} from '../../../store/modules/Notes/newnotesSlice';
-import { showSnackbar } from '../../../store/modules/Snackbar/snackbarSlice';
+} from '../../../store/modules/Notes/notesSlice';
 
 interface ModalNotesProps {
 	idUserLogged: string;
@@ -31,9 +30,9 @@ export const ModalNotes: React.FC<ModalNotesProps> = ({ idUserLogged }) => {
 	const select = useAppSelector((state) => state.modal);
 	const dispatch = useAppDispatch();
 
-	const [titulo, setTitulo] = useState('');
+	const [title, setTitle] = useState('');
 
-	const [descricao, setDescricao] = useState('');
+	const [description, setDescription] = useState('');
 
 	const [erroTitulo, setErroTitulo] = useState<IsValidCredentials>({
 		helperText: '',
@@ -47,17 +46,17 @@ export const ModalNotes: React.FC<ModalNotesProps> = ({ idUserLogged }) => {
 
 	useEffect(() => {
 		if (select.recadoSelecionado) {
-			setTitulo(select.recadoSelecionado.title);
-			setDescricao(select.recadoSelecionado.description);
+			setTitle(select.recadoSelecionado.title);
+			setDescription(select.recadoSelecionado.description);
 		} else {
 			limpaInputs();
 		}
 	}, [select.recadoSelecionado]);
 
 	useEffect(() => {
-		if (titulo && titulo.length < 3) {
+		if (title && title.length < 3) {
 			setErroTitulo({
-				helperText: 'Insira um titulo válido',
+				helperText: 'Insira um title válido',
 				isValid: false,
 			});
 		} else {
@@ -66,10 +65,10 @@ export const ModalNotes: React.FC<ModalNotesProps> = ({ idUserLogged }) => {
 				isValid: true,
 			});
 		}
-	}, [titulo]);
+	}, [title]);
 
 	useEffect(() => {
-		if (descricao && descricao.length < 3) {
+		if (description && description.length < 3) {
 			setErroDescricao({
 				helperText: 'Insira uma descrição válida',
 				isValid: false,
@@ -80,12 +79,12 @@ export const ModalNotes: React.FC<ModalNotesProps> = ({ idUserLogged }) => {
 				isValid: true,
 			});
 		}
-	}, [descricao]);
+	}, [description]);
 
 	async function handleConfirm() {
 		if (
-			!titulo ||
-			!descricao ||
+			!title ||
+			!description ||
 			!erroTitulo.isValid ||
 			!erroDescricao.isValid
 		) {
@@ -94,23 +93,16 @@ export const ModalNotes: React.FC<ModalNotesProps> = ({ idUserLogged }) => {
 
 		switch (select.contexto) {
 			case 'create':
-				console.log('criar nota');
 				await dispatch(
 					createNoteAsyncThunk({
-						title: titulo,
-						description: descricao,
+						title: title,
+						description: description,
 						authorId: idUserLogged,
 					}),
 				);
 
 				dispatch(hideModalNotes({ open: false }));
 				limpaInputs();
-				dispatch(
-					showSnackbar({
-						tipo: 'success',
-						mensagem: 'Recado criado com sucesso',
-					}),
-				);
 
 				break;
 
@@ -119,20 +111,15 @@ export const ModalNotes: React.FC<ModalNotesProps> = ({ idUserLogged }) => {
 					await dispatch(
 						updateNotesAsyncThunk({
 							id: select.recadoSelecionado.id,
-							description: descricao,
-							title: titulo,
+							description: description,
+							title: title,
 						}),
 					);
 				}
 
 				dispatch(hideModalNotes({ open: false }));
-				dispatch(
-					showSnackbar({
-						tipo: 'success',
-						mensagem: 'Recado atualizado com sucesso',
-					}),
-				);
 				limpaInputs();
+
 				break;
 			case 'delete':
 				if (select.recadoSelecionado) {
@@ -143,19 +130,14 @@ export const ModalNotes: React.FC<ModalNotesProps> = ({ idUserLogged }) => {
 					);
 				}
 				dispatch(hideModalNotes({ open: false }));
-				dispatch(
-					showSnackbar({
-						tipo: 'success',
-						mensagem: 'Recado deletado com sucesso',
-					}),
-				);
+
 				break;
 		}
 	}
 
 	function limpaInputs() {
-		setTitulo('');
-		setDescricao('');
+		setTitle('');
+		setDescription('');
 	}
 
 	return (
@@ -180,22 +162,24 @@ export const ModalNotes: React.FC<ModalNotesProps> = ({ idUserLogged }) => {
 							<TextField
 								label={'Titulo'}
 								type="text"
-								value={titulo}
+								value={title}
 								fullWidth
 								helperText={erroTitulo.helperText}
 								error={!erroTitulo.isValid}
-								onChange={(ev) => setTitulo(ev.target.value)}
+								onChange={(ev) => setTitle(ev.target.value)}
 							/>
 						</Grid>
 						<Grid item xs={12}>
 							<TextField
 								label={'Descrição'}
 								type="text"
-								value={descricao}
+								value={description}
 								fullWidth
 								helperText={erroDescricao.helperText}
 								error={!erroDescricao.isValid}
-								onChange={(ev) => setDescricao(ev.target.value)}
+								onChange={(ev) =>
+									setDescription(ev.target.value)
+								}
 							/>
 						</Grid>
 					</Grid>

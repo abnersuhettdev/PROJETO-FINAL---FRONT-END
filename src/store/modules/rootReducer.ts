@@ -2,7 +2,7 @@ import { combineReducers } from '@reduxjs/toolkit';
 
 import loadingSlice from './Loading/loadingSlice';
 import modalNotesSlice from './ModalNotes/modalNotesSlice';
-import notesSlice from './Notes/newnotesSlice';
+import notesSlice from './Notes/notesSlice';
 import snackbarSlice from './Snackbar/snackbarSlice';
 import usersSlice from './User/userSlice';
 

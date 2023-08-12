@@ -19,7 +19,7 @@ import {
 	hideLoading,
 	showLoading,
 } from '../../../store/modules/Loading/loadingSlice';
-import { getNotesAsyncThunk } from '../../../store/modules/Notes/newnotesSlice';
+import { getNotesAsyncThunk } from '../../../store/modules/Notes/notesSlice';
 import { logoutUser } from '../../../store/modules/User/userSlice';
 
 interface AppbarProps {
@@ -103,10 +103,10 @@ export const MyAppbar: React.FC<AppbarProps> = ({ usuario }) => {
 					</Grid>
 
 					<Grid>
-						{route.pathname !== '/arquived' ? (
+						{route.pathname !== '/archived' ? (
 							<IconButton
 								onClick={() => {
-									navigate('/arquived');
+									navigate('/archived');
 								}}
 								color="inherit"
 								sx={{

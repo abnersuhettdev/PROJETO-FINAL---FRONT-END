@@ -13,6 +13,7 @@ import {
 	validateUsuario,
 } from '../../../../configs/Validators';
 import { useAppDispatch, useAppSelector } from '../../../../store/hooks';
+import { showSnackbar } from '../../../../store/modules/Snackbar/snackbarSlice';
 import { cadastrarUsuario } from '../../../../store/modules/User/userSlice';
 
 const style = {
@@ -39,7 +40,7 @@ export const ModalCadastro: React.FC<ModalProps> = ({
 	const [name, setName] = useState('');
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
-	const [confirmaSenha, setConfirmaSenha] = useState('');
+	const [password2, setPassword2] = useState('');
 	const estadoUser = useAppSelector((estado) => estado.users);
 
 	const dispatch = useAppDispatch();
@@ -105,7 +106,7 @@ export const ModalCadastro: React.FC<ModalProps> = ({
 			});
 		}
 
-		if (confirmaSenha && !validateConfirmaSenha(password, confirmaSenha)) {
+		if (password2 && !validateConfirmaSenha(password, password2)) {
 			setErrorConfirmaSenha({
 				helperText: 'As senhas não são idênticas',
 				isValid: false,
@@ -116,7 +117,7 @@ export const ModalCadastro: React.FC<ModalProps> = ({
 				isValid: true,
 			});
 		}
-	}, [password, confirmaSenha]);
+	}, [password, password2]);
 
 	useEffect(() => {
 		limpaModal();
@@ -127,7 +128,7 @@ export const ModalCadastro: React.FC<ModalProps> = ({
 			validateUsuario(name) &&
 			validateEmail(email) &&
 			validateSenha(password) &&
-			validateConfirmaSenha(password, confirmaSenha)
+			validateConfirmaSenha(password, password2)
 		) {
 			return true;
 		}
@@ -137,10 +138,12 @@ export const ModalCadastro: React.FC<ModalProps> = ({
 	function handleSubmit(ev: React.FormEvent<HTMLFormElement>) {
 		ev.preventDefault();
 
-		const usuarioValido = validateInputs();
+		const userIsValid = validateInputs();
 
-		if (!usuarioValido) {
-			console.log('Usuario inválido');
+		if (!userIsValid) {
+			dispatch(
+				showSnackbar({ tipo: 'warning', mensagem: 'Usuário inválido' }),
+			);
 			return;
 		}
 
@@ -155,14 +158,14 @@ export const ModalCadastro: React.FC<ModalProps> = ({
 		setTimeout(() => {
 			limpaModal();
 			fecharModal();
-		}, 3000);
+		}, 1000);
 	}
 
 	function limpaModal() {
 		setName('');
 		setEmail('');
 		setPassword('');
-		setConfirmaSenha('');
+		setPassword2('');
 	}
 
 	return (
@@ -231,7 +234,7 @@ export const ModalCadastro: React.FC<ModalProps> = ({
 								helperText={errorConfirmaSenha.helperText}
 								error={!errorConfirmaSenha.isValid}
 								onChange={(ev) =>
-									setConfirmaSenha(ev.currentTarget.value)
+									setPassword2(ev.currentTarget.value)
 								}
 							/>
 

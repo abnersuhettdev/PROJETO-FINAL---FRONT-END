@@ -12,7 +12,7 @@ import { logarUsuario } from '../../../../store/modules/User/userSlice';
 
 export const LoginForm: React.FC = () => {
 	const [email, setEmail] = useState('');
-	const [senha, setSenha] = useState('');
+	const [password, setPassword] = useState('');
 	const estadoUser = useAppSelector((estado) => estado.users);
 
 	const dispatch = useAppDispatch();
@@ -32,7 +32,7 @@ export const LoginForm: React.FC = () => {
 	function handleLogin(ev: React.FormEvent<HTMLFormElement>) {
 		ev.preventDefault();
 
-		if (!email || !senha) {
+		if (!email || !password) {
 			dispatch(
 				showSnackbar({
 					mensagem: 'Insira um email e senha para continuar',
@@ -43,8 +43,8 @@ export const LoginForm: React.FC = () => {
 		}
 
 		const userLogged = {
-			email: email,
-			password: senha,
+			email,
+			password,
 		};
 
 		dispatch(logarUsuario(userLogged));
@@ -79,7 +79,7 @@ export const LoginForm: React.FC = () => {
 				variant="standard"
 				fullWidth
 				type="password"
-				onChange={(ev) => setSenha(ev.target.value)}
+				onChange={(ev) => setPassword(ev.target.value)}
 			></TextField>
 			<Button
 				fullWidth

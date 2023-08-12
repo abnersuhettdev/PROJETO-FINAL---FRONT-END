@@ -10,7 +10,7 @@ import CardContent from '@mui/material/CardContent';
 import { INotes } from '../../../configs/types/Notes';
 import { useAppDispatch } from '../../../store/hooks';
 import { showModalNotes } from '../../../store/modules/ModalNotes/modalNotesSlice';
-import { archiveNotesAsyncThunk } from '../../../store/modules/Notes/newnotesSlice';
+import { archiveNotesAsyncThunk } from '../../../store/modules/Notes/notesSlice';
 
 interface NotesProps {
 	note: INotes;
@@ -20,7 +20,6 @@ export const MyCard: React.FC<NotesProps> = ({ note }) => {
 	const dispatch = useAppDispatch();
 
 	const archiveNote = async () => {
-		console.log('arquivar');
 		await dispatch(archiveNotesAsyncThunk({ id: note.id }));
 	};
 
@@ -55,8 +54,8 @@ export const MyCard: React.FC<NotesProps> = ({ note }) => {
 					</Grid>
 					<Grid item justifyContent={'flex-end'}>
 						<IconButton onClick={archiveNote}>
-							{!note.arquived && <Folder />}
-							{note.arquived && <FolderOutlined />}
+							{!note.archived && <Folder />}
+							{note.archived && <FolderOutlined />}
 						</IconButton>
 						<IconButton
 							onClick={() =>
