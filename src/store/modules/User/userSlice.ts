@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { AxiosError } from 'axios';
 
-import minhaApi from '../../../configs/services/integration.api';
+import serviceApi from '../../../configs/services/integration.api';
 import {
 	IUser,
 	ResponseSignIn,
@@ -22,7 +22,10 @@ export const cadastrarUsuario = createAsyncThunk(
 	'user/cadastrar',
 	async (novoUsuario: IUser, { dispatch }) => {
 		try {
-			const resposta = await minhaApi.post('/users/signup', novoUsuario);
+			const resposta = await serviceApi.post(
+				'/users/signup',
+				novoUsuario,
+			);
 
 			const dadosAPI = resposta.data as ResponseSignUp;
 
@@ -62,7 +65,7 @@ export const logarUsuario = createAsyncThunk(
 	'user/logar',
 	async (dados: Omit<IUser, 'name'>, { dispatch }) => {
 		try {
-			const resposta = await minhaApi.post('/users/signin', dados);
+			const resposta = await serviceApi.post('/users/signin', dados);
 
 			const dadosAPI = resposta.data as ResponseSignIn;
 
