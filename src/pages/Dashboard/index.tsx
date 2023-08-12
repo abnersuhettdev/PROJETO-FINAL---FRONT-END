@@ -61,7 +61,8 @@ export const Dashboard = () => {
 				>
 					{select.map(
 						(note) =>
-							note.criadoPor === idUserLogged && (
+							note.criadoPor === idUserLogged &&
+							note.arquivado != true && (
 								<Grid key={note.id} item xs={12} sm={6} md={4}>
 									<MyCard note={note} />
 								</Grid>
