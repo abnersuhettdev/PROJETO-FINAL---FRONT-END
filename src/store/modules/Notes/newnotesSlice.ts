@@ -7,7 +7,7 @@ import {
 import { RootState } from '../..';
 import serviceAPI from '../../../configs/services/integration.api';
 import { INotes } from '../../../configs/types/Notes';
-import { showLoading } from '../Loading/loadingSlice';
+import { showSnackbar } from '../Snackbar/snackbarSlice';
 import {
 	CreateNote,
 	DeletedNoteReturn,
@@ -36,11 +36,13 @@ export const createNoteAsyncThunk = createAsyncThunk(
 
 export const getNotesAsyncThunk = createAsyncThunk(
 	'notes/list',
-	async ({ authorId, title, archived }: GetNotes) => {
-		const response = await serviceAPI.get(`/notes/${authorId}`, {
+	async ({ title, arquived }: GetNotes, { getState }) => {
+		const user = (getState() as RootState).users.user;
+
+		const response = await serviceAPI.get(`/notes/${user.id}`, {
 			params: {
 				title,
-				archived,
+				arquived,
 			},
 		});
 
@@ -50,14 +52,13 @@ export const getNotesAsyncThunk = createAsyncThunk(
 
 export const updateNotesAsyncThunk = createAsyncThunk(
 	'notes/updateNote',
-	async (data: UpdateNote) => {
-		const response = await serviceAPI.put(
-			`/notes/${data.authorId}/${data.id}`,
-			{
-				title: data.title,
-				description: data.description,
-			},
-		);
+	async (data: UpdateNote, { getState }) => {
+		const user = (getState() as RootState).users.user;
+
+		const response = await serviceAPI.put(`/notes/${user.id}/${data.id}`, {
+			title: data.title,
+			description: data.description,
+		});
 
 		return response.data as UpdateNoteReturn;
 	},
@@ -65,8 +66,10 @@ export const updateNotesAsyncThunk = createAsyncThunk(
 
 export const deleteNotesAsyncThunk = createAsyncThunk(
 	'notes/delete',
-	async ({ id, authorId }: { id: string; authorId: string }) => {
-		const response = await serviceAPI.delete(`/notes/${authorId}/${id}`);
+	async ({ id }: { id: string }, { getState }) => {
+		const user = (getState() as RootState).users.user;
+
+		const response = await serviceAPI.delete(`/notes/${user.id}/${id}`);
 
 		return response.data as DeletedNoteReturn;
 	},
@@ -74,11 +77,30 @@ export const deleteNotesAsyncThunk = createAsyncThunk(
 
 export const archiveNotesAsyncThunk = createAsyncThunk(
 	'notes/archive',
-	async ({ id, authorId }: { id: string; authorId: string }) => {
-		const response = await serviceAPI.put(
-			`/notes/${authorId}/${id}/arquive`,
-		);
-		return response.data as UpdateNoteReturn;
+	async ({ id }: { id: string }, { getState, dispatch }) => {
+		try {
+			const user = (getState() as RootState).users.user;
+
+			const response = await serviceAPI.put(
+				`/notes/${user.id}/${id}/arquive`,
+			);
+
+			dispatch(
+				showSnackbar({
+					tipo: 'success',
+					mensagem: 'Recado Arquivado com sucesso',
+				}),
+			);
+			return response.data as UpdateNoteReturn;
+		} catch (err) {
+			dispatch(
+				showSnackbar({
+					tipo: 'error',
+					mensagem: 'Erro ao arquivar',
+				}),
+			);
+			throw err;
+		}
 	},
 );
 
@@ -89,26 +111,17 @@ const notesSlice = createSlice({
 	extraReducers: (builder) => {
 		//Create
 		builder.addCase(createNoteAsyncThunk.fulfilled, (state, action) => {
-			if (action.payload.success) {
-				notesAdapter.addOne(state, action.payload.note);
-
-				console.log(action.payload);
+			if (action.payload.data.success) {
+				notesAdapter.addOne(state, action.payload.data.data);
 			}
-		});
-		builder.addCase(createNoteAsyncThunk.rejected, (state, action) => {
-			console.log(action.payload);
-
-			return notesAdapter.getInitialState();
 		});
 
 		//List
 		builder.addCase(getNotesAsyncThunk.fulfilled, (state, action) => {
 			if (action.payload.success) {
-				notesAdapter.setAll(state, action.payload.notes);
+				notesAdapter.setAll(state, action.payload.data);
+				console.log('cheguei no if');
 			}
-			setTimeout(() => {
-				showLoading();
-			}, 2000);
 		});
 		builder.addCase(getNotesAsyncThunk.rejected, (state) => {
 			notesAdapter.setAll(state, []);
@@ -118,36 +131,29 @@ const notesSlice = createSlice({
 		builder.addCase(updateNotesAsyncThunk.fulfilled, (state, action) => {
 			if (action.payload.success) {
 				notesAdapter.updateOne(state, {
-					id: action.payload.updatedData.id,
-					changes: action.payload.updatedData,
+					id: action.payload.data.id,
+					changes: action.payload.data,
 				});
 			}
-		});
-		builder.addCase(updateNotesAsyncThunk.rejected, () => {
-			return notesAdapter.getInitialState();
 		});
 
 		//Archive
 		builder.addCase(archiveNotesAsyncThunk.fulfilled, (state, action) => {
 			if (action.payload.success) {
 				notesAdapter.updateOne(state, {
-					id: action.payload.updatedData.id,
-					changes: action.payload.updatedData,
+					id: action.payload.data.id,
+					changes: {
+						arquived: action.payload.data.arquived,
+					},
 				});
 			}
-		});
-		builder.addCase(archiveNotesAsyncThunk.rejected, () => {
-			return notesAdapter.getInitialState();
 		});
 
 		//Delete
 		builder.addCase(deleteNotesAsyncThunk.fulfilled, (state, action) => {
-			if (action.payload.success) {
-				notesAdapter.removeOne(state, action.payload.deletedNote.id);
+			if (action.payload) {
+				notesAdapter.removeOne(state, action.payload.data.id);
 			}
-		});
-		builder.addCase(deleteNotesAsyncThunk.rejected, () => {
-			return notesAdapter.getInitialState();
 		});
 	},
 });
