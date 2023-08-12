@@ -16,11 +16,11 @@ import { useEffect, useState } from 'react';
 import { IsValidCredentials } from '../../../configs/types/IsValidCredentials';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import { hideModalNotes } from '../../../store/modules/ModalNotes/modalNotesSlice';
-import { createNoteAsyncThunk } from '../../../store/modules/Notes/newnotesSlice';
 import {
-	deleteNote,
-	updateNote,
-} from '../../../store/modules/Notes/notesSlice';
+	createNoteAsyncThunk,
+	deleteNotesAsyncThunk,
+	updateNotesAsyncThunk,
+} from '../../../store/modules/Notes/newnotesSlice';
 import { showSnackbar } from '../../../store/modules/Snackbar/snackbarSlice';
 
 interface ModalNotesProps {
@@ -111,38 +111,20 @@ export const ModalNotes: React.FC<ModalNotesProps> = ({ idUserLogged }) => {
 					}),
 				);
 
-				// const novoRecado: INotes = {
-				// 	id: gerarId(),
-				// 	criadoEm: gerarData(),
-				// 	titulo: titulo,
-				// 	descricao: descricao,
-				// 	criadoPor: idUserLogged,
-				// 	arquivado: false,
-				// };
-
-				// dispatch(createNote(novoRecado));
-				// dispatch(hideModalNotes({ open: false }));
-				// limpaInputs();
-				// dispatch(
-				// 	showSnackbar({
-				// 		tipo: 'success',
-				// 		mensagem: 'Recado criado com sucesso',
-				// 	}),
-				// );
 				break;
 
 			case 'update':
 				if (select.recadoSelecionado) {
-					dispatch(
-						updateNote({
+					await dispatch(
+						updateNotesAsyncThunk({
+							authorId: select.recadoSelecionado.criadoPor,
 							id: select.recadoSelecionado.id,
-							changes: {
-								titulo: titulo,
-								descricao: descricao,
-							},
+							description: descricao,
+							title: titulo,
 						}),
 					);
 				}
+
 				dispatch(hideModalNotes({ open: false }));
 				dispatch(
 					showSnackbar({
@@ -154,7 +136,12 @@ export const ModalNotes: React.FC<ModalNotesProps> = ({ idUserLogged }) => {
 				break;
 			case 'delete':
 				if (select.recadoSelecionado) {
-					dispatch(deleteNote(select.recadoSelecionado.id));
+					dispatch(
+						deleteNotesAsyncThunk({
+							authorId: select.recadoSelecionado.criadoPor,
+							id: select.recadoSelecionado.id,
+						}),
+					);
 				}
 				dispatch(hideModalNotes({ open: false }));
 				dispatch(
@@ -165,14 +152,6 @@ export const ModalNotes: React.FC<ModalNotesProps> = ({ idUserLogged }) => {
 				);
 				break;
 		}
-	}
-
-	function gerarData() {
-		return new Date().toLocaleDateString('pt-BR', {
-			month: '2-digit',
-			day: '2-digit',
-			year: 'numeric',
-		});
 	}
 
 	function limpaInputs() {
